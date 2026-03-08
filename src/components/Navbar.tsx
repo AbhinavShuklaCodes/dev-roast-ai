@@ -1,7 +1,9 @@
-import { Flame, Github } from "lucide-react";
+import { Flame, Trophy } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const scrollToInput = () => {
     document.getElementById("roast-input")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -17,6 +19,10 @@ const Navbar = () => {
           <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
           <a href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How it works</a>
           <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+          <button onClick={() => navigate("/leaderboard")} className="text-sm text-muted-foreground hover:text-foreground transition-colors flex items-center gap-1.5">
+            <Trophy className="h-3.5 w-3.5" />
+            Leaderboard
+          </button>
         </div>
         <Button variant="hero" size="sm" onClick={scrollToInput}>
           Roast My GitHub
