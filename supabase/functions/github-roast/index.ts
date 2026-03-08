@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -100,6 +101,32 @@ Return this exact JSON structure:
     content = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     
     const parsed = JSON.parse(content);
+
+    // Save to database for leaderboard
+    try {
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+      await supabase.from("roast_results").insert({
+        github_username: login,
+        github_name: name,
+        avatar_url: githubData.avatar_url,
+        roast: parsed.roast,
+        overall_score: parsed.overallScore,
+        code_quality_score: parsed.scores?.codeQuality || 0,
+        originality_score: parsed.scores?.projectOriginality || 0,
+        consistency_score: parsed.scores?.consistency || 0,
+        documentation_score: parsed.scores?.documentation || 0,
+        strengths: parsed.strengths || [],
+        weaknesses: parsed.weaknesses || [],
+        suggestions: parsed.suggestions || [],
+        project_ideas: parsed.projectIdeas || [],
+      });
+    } catch (dbErr) {
+      console.error("Failed to save roast result:", dbErr);
+      // Don't fail the request if DB save fails
+    }
 
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
