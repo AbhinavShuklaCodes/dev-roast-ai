@@ -1,1 +1,4 @@
 project_id = "sflmghadlrggzhucvzvn"
+
+[functions.github-roast]
+verify_jwt = false
