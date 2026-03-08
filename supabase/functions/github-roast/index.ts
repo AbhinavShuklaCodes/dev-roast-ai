@@ -97,10 +97,7 @@ Return this exact JSON structure:
     const aiResponse = await response.json();
     let content = aiResponse.choices?.[0]?.message?.content || "";
     
-    // Strip markdown code fences if present
-    content = content.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
-    
-    const parsed = JSON.parse(content);
+    const parsed = extractJsonFromResponse(content);
 
     // Save to database for leaderboard
     try {
