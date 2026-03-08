@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2 } from "lucide-react";
+import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2, Volume2, Square, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -76,6 +76,56 @@ const RoastPage = () => {
   const [githubData, setGithubData] = useState<GitHubData | null>(null);
   const [result, setResult] = useState<RoastResult | null>(null);
   const [loadingPhase, setLoadingPhase] = useState("Fetching GitHub data...");
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [audioRef, setAudioRef] = useState<HTMLAudioElement | null>(null);
+
+  const playRoast = async () => {
+    if (isPlayingAudio && audioRef) {
+      audioRef.pause();
+      audioRef.currentTime = 0;
+      setIsPlayingAudio(false);
+      return;
+    }
+
+    if (!result?.roast) return;
+    setIsLoadingAudio(true);
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ text: result.roast }),
+        }
+      );
+
+      if (!response.ok) throw new Error("TTS request failed");
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      setAudioRef(audio);
+      
+      audio.onended = () => {
+        setIsPlayingAudio(false);
+        URL.revokeObjectURL(audioUrl);
+      };
+
+      await audio.play();
+      setIsPlayingAudio(true);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to generate voice. Try again.");
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
 
   useEffect(() => {
     if (username) fetchAndRoast(username);
@@ -211,9 +261,26 @@ const RoastPage = () => {
           transition={{ delay: 0.2 }}
           className="rounded-2xl border border-glow bg-card p-8 mb-6"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <Flame className="h-5 w-5 text-primary" />
-            <h2 className="font-bold text-lg">The Roast</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Flame className="h-5 w-5 text-primary" />
+              <h2 className="font-bold text-lg">The Roast</h2>
+            </div>
+            <Button
+              variant="hero-outline"
+              size="sm"
+              onClick={playRoast}
+              disabled={isLoadingAudio}
+              className="gap-2"
+            >
+              {isLoadingAudio ? (
+                <><Loader className="h-4 w-4 animate-spin" /> Generating...</>
+              ) : isPlayingAudio ? (
+                <><Square className="h-3.5 w-3.5" /> Stop</>
+              ) : (
+                <><Volume2 className="h-4 w-4" /> Listen to Roast</>
+              )}
+            </Button>
           </div>
           <p className="font-mono text-sm leading-relaxed text-secondary-foreground italic">
             "{result.roast}"
