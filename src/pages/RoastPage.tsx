@@ -104,13 +104,17 @@ const RoastPage = () => {
     utterance.rate = persona.rate;
     utterance.lang = "en-IN";
 
-    // Try to pick a female English-IN voice
+    // Pick a female voice, preferring Indian English
     const voices = window.speechSynthesis.getVoices();
-    const indianFemale = voices.find(v => v.lang.includes("en-IN") && v.name.toLowerCase().includes("female")) 
+    const femaleKeywords = ["female", "woman", "girl", "zira", "heera", "priya", "aditi", "neerja", "samantha", "karen", "moira", "fiona", "veena"];
+    const isFemale = (v: SpeechSynthesisVoice) => femaleKeywords.some(k => v.name.toLowerCase().includes(k));
+    
+    const voice = voices.find(v => v.lang.includes("en-IN") && isFemale(v))
       || voices.find(v => v.lang.includes("en-IN"))
-      || voices.find(v => v.lang.includes("en") && v.name.toLowerCase().includes("female"))
+      || voices.find(v => v.lang.includes("en") && isFemale(v))
+      || voices.find(v => isFemale(v))
       || voices.find(v => v.lang.includes("en"));
-    if (indianFemale) utterance.voice = indianFemale;
+    if (voice) utterance.voice = voice;
 
     utterance.onend = () => setIsPlayingAudio(false);
     utterance.onerror = () => {
