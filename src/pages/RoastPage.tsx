@@ -78,65 +78,49 @@ const RoastPage = () => {
   const [result, setResult] = useState<RoastResult | null>(null);
   const [loadingPhase, setLoadingPhase] = useState("Fetching GitHub data...");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState("desi-aunty");
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const personas = [
-    { id: "desi-aunty", label: "🧕 Desi Aunty", voiceId: "EXAVITQu4vr4xnSDxMaL", emoji: "🧕", intro: "Arre beta, sun toh sahi... let me tell you about this GitHub profile.", stability: 0.25, style: 0.8, speed: 1.05 },
-    { id: "strict-professor", label: "👨‍🏫 Strict Professor", voiceId: "onwK4e9ZLuTAKqWW03F9", emoji: "👨‍🏫", intro: "Class, pay attention. Today we dissect a rather... interesting GitHub profile.", stability: 0.6, style: 0.4, speed: 0.95 },
-    { id: "bollywood-villain", label: "🎬 Bollywood Villain", voiceId: "nPczCjzI2devNBz1zQrb", emoji: "🎬", intro: "*evil laugh* Tumne socha tha tumhara GitHub profile accha hai? Let me show you the truth.", stability: 0.2, style: 0.9, speed: 1.1 },
-    { id: "cricket-commentator", label: "🏏 Cricket Commentator", voiceId: "JBFqnCBsd6RMkjVDRZzb", emoji: "🏏", intro: "And the developer walks up to the crease... let's see what this innings looks like!", stability: 0.4, style: 0.6, speed: 1.15 },
+    { id: "desi-aunty", label: "🧕 Desi Aunty", emoji: "🧕", intro: "Arre beta, sun toh sahi... let me tell you about this GitHub profile.", pitch: 1.3, rate: 1.05 },
+    { id: "strict-professor", label: "👨‍🏫 Strict Professor", emoji: "👨‍🏫", intro: "Class, pay attention. Today we dissect a rather... interesting GitHub profile.", pitch: 0.9, rate: 0.9 },
+    { id: "bollywood-villain", label: "🎬 Bollywood Villain", emoji: "🎬", intro: "Tumne socha tha tumhara GitHub profile accha hai? Let me show you the truth.", pitch: 0.7, rate: 0.95 },
+    { id: "cricket-commentator", label: "🏏 Cricket Commentator", emoji: "🏏", intro: "And the developer walks up to the crease... let's see what this innings looks like!", pitch: 1.1, rate: 1.15 },
   ];
 
-  const playRoast = async () => {
+  const playRoast = () => {
     if (!result) return;
 
-    if (isPlayingAudio && audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
+    if (isPlayingAudio) {
+      window.speechSynthesis.cancel();
       setIsPlayingAudio(false);
       return;
     }
 
-    setIsLoadingAudio(true);
-    try {
-      const persona = personas.find(p => p.id === selectedPersona) || personas[0];
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-          },
-          body: JSON.stringify({
-            text: `${persona.intro} ${result.roast}`,
-            voiceId: persona.voiceId,
-            stability: persona.stability,
-            style: persona.style,
-            speed: persona.speed,
-          }),
-        }
-      );
+    const persona = personas.find(p => p.id === selectedPersona) || personas[0];
+    const text = `${persona.intro} ${result.roast}`;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.pitch = persona.pitch;
+    utterance.rate = persona.rate;
+    utterance.lang = "en-IN";
 
-      if (!response.ok) throw new Error("TTS failed");
+    // Try to pick a female English-IN voice
+    const voices = window.speechSynthesis.getVoices();
+    const indianFemale = voices.find(v => v.lang.includes("en-IN") && v.name.toLowerCase().includes("female")) 
+      || voices.find(v => v.lang.includes("en-IN"))
+      || voices.find(v => v.lang.includes("en") && v.name.toLowerCase().includes("female"))
+      || voices.find(v => v.lang.includes("en"));
+    if (indianFemale) utterance.voice = indianFemale;
 
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audioRef.current = audio;
+    utterance.onend = () => setIsPlayingAudio(false);
+    utterance.onerror = () => {
+      setIsPlayingAudio(false);
+      toast.error("Voice playback failed. Your browser may not support speech synthesis.");
+    };
 
-      audio.onended = () => setIsPlayingAudio(false);
-      audio.play();
-      setIsPlayingAudio(true);
-    } catch (err) {
-      console.error("TTS error:", err);
-      toast.error("Voice playback failed. Please try again.");
-    } finally {
-      setIsLoadingAudio(false);
-    }
+    utteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+    setIsPlayingAudio(true);
   };
 
   useEffect(() => {
