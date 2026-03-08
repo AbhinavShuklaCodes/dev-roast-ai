@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      roast_results: {
+        Row: {
+          avatar_url: string | null
+          code_quality_score: number
+          consistency_score: number
+          created_at: string
+          documentation_score: number
+          github_name: string | null
+          github_username: string
+          id: string
+          originality_score: number
+          overall_score: number
+          project_ideas: string[] | null
+          roast: string
+          strengths: string[] | null
+          suggestions: string[] | null
+          weaknesses: string[] | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          code_quality_score?: number
+          consistency_score?: number
+          created_at?: string
+          documentation_score?: number
+          github_name?: string | null
+          github_username: string
+          id?: string
+          originality_score?: number
+          overall_score: number
+          project_ideas?: string[] | null
+          roast: string
+          strengths?: string[] | null
+          suggestions?: string[] | null
+          weaknesses?: string[] | null
+        }
+        Update: {
+          avatar_url?: string | null
+          code_quality_score?: number
+          consistency_score?: number
+          created_at?: string
+          documentation_score?: number
+          github_name?: string | null
+          github_username?: string
+          id?: string
+          originality_score?: number
+          overall_score?: number
+          project_ideas?: string[] | null
+          roast?: string
+          strengths?: string[] | null
+          suggestions?: string[] | null
+          weaknesses?: string[] | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
