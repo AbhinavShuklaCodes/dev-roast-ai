@@ -79,7 +79,15 @@ const RoastPage = () => {
   const [loadingPhase, setLoadingPhase] = useState("Fetching GitHub data...");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [selectedPersona, setSelectedPersona] = useState("desi-aunty");
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  const personas = [
+    { id: "desi-aunty", label: "🧕 Desi Aunty", voiceId: "EXAVITQu4vr4xnSDxMaL", emoji: "🧕", intro: "Arre beta, sun toh sahi... let me tell you about this GitHub profile.", stability: 0.25, style: 0.8, speed: 1.05 },
+    { id: "strict-professor", label: "👨‍🏫 Strict Professor", voiceId: "onwK4e9ZLuTAKqWW03F9", emoji: "👨‍🏫", intro: "Class, pay attention. Today we dissect a rather... interesting GitHub profile.", stability: 0.6, style: 0.4, speed: 0.95 },
+    { id: "bollywood-villain", label: "🎬 Bollywood Villain", voiceId: "nPczCjzI2devNBz1zQrb", emoji: "🎬", intro: "*evil laugh* Tumne socha tha tumhara GitHub profile accha hai? Let me show you the truth.", stability: 0.2, style: 0.9, speed: 1.1 },
+    { id: "cricket-commentator", label: "🏏 Cricket Commentator", voiceId: "JBFqnCBsd6RMkjVDRZzb", emoji: "🏏", intro: "And the developer walks up to the crease... let's see what this innings looks like!", stability: 0.4, style: 0.6, speed: 1.15 },
+  ];
 
   const playRoast = async () => {
     if (!result) return;
@@ -93,6 +101,7 @@ const RoastPage = () => {
 
     setIsLoadingAudio(true);
     try {
+      const persona = personas.find(p => p.id === selectedPersona) || personas[0];
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
         {
@@ -103,7 +112,11 @@ const RoastPage = () => {
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
           body: JSON.stringify({
-            text: `*clears throat dramatically* Okay beta, let me tell you about this GitHub profile. ${result.roast}`,
+            text: `${persona.intro} ${result.roast}`,
+            voiceId: persona.voiceId,
+            stability: persona.stability,
+            style: persona.style,
+            speed: persona.speed,
           }),
         }
       );
