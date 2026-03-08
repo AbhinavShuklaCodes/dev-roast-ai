@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2, Volume2, Square, Loader } from "lucide-react";
+import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2, Volume2, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -284,11 +284,8 @@ const RoastPage = () => {
             size="sm"
             className="mt-3"
             onClick={playRoast}
-            disabled={isLoadingAudio}
           >
-            {isLoadingAudio ? (
-              <><Loader className="h-4 w-4 animate-spin" /> Generating Voice...</>
-            ) : isPlayingAudio ? (
+            {isPlayingAudio ? (
               <><Square className="h-4 w-4" /> Stop Roast</>
             ) : (
               <><Volume2 className="h-4 w-4" /> 🎧 Hear the Roast</>
