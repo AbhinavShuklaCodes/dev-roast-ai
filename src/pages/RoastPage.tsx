@@ -5,6 +5,7 @@ import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import ShareableRoastCard from "@/components/ShareableRoastCard";
 
 interface RoastResult {
   roast: string;
@@ -370,6 +371,26 @@ const RoastPage = () => {
               </li>
             ))}
           </ul>
+        </motion.div>
+
+        {/* Shareable Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mb-8"
+        >
+          <h2 className="text-lg font-bold mb-4">Share Your Roast</h2>
+          <div className="overflow-x-auto pb-4">
+            <ShareableRoastCard
+              username={githubData.login}
+              name={githubData.name}
+              avatarUrl={githubData.avatar_url}
+              roast={result.roast}
+              overallScore={result.overallScore}
+              scores={result.scores}
+            />
+          </div>
         </motion.div>
 
         {/* Back button */}
