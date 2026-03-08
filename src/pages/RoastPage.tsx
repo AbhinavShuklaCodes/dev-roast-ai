@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2 } from "lucide-react";
+import { ArrowLeft, Flame, Star, TrendingUp, AlertTriangle, Lightbulb, FolderGit2, Loader2, Volume2, Square, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
