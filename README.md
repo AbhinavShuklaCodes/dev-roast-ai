@@ -1,73 +1,41 @@
-# Welcome to your Lovable project
+🔥 Git Roast AI
 
-## Project info
+Git Roast AI is an AI-powered web app that analyzes your GitHub profile and gives you a hilarious but insightful roast. It scans your repositories, commit activity, and coding habits to generate a fun AI roast while also highlighting areas where you can improve as a developer.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Perfect for developers who want to laugh at their coding mistakes while learning how to improve their GitHub profile.
 
-## How can I edit this code?
+🚀 Features
 
-There are several ways of editing your application.
+🤖 AI-generated GitHub profile roasts
 
-**Use Lovable**
+📊 Analyzes repositories and commit activity
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+🔎 Detects weak spots in your GitHub profile
 
-Changes made via Lovable will be committed automatically to this repo.
+😂 Funny and shareable developer roasts
 
-**Use your preferred IDE**
+🧠 Useful suggestions to improve your profile
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+📱 Clean and modern UI
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+🧠 How It Works
 
-Follow these steps:
+Enter your GitHub username
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+The system fetches your public repositories and activity
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+AI analyzes your coding patterns
 
-# Step 3: Install the necessary dependencies.
-npm i
+It generates a fun roast + improvement suggestions
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+💻 Tech Stack
 
-**Edit a file directly in GitHub**
+HTML
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+CSS
 
-**Use GitHub Codespaces**
+JavaScript
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+AI API (OpenAI / LLM)
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+GitHub API
