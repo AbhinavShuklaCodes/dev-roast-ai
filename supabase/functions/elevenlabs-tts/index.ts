@@ -11,14 +11,14 @@ serve(async (req) => {
   }
 
   try {
-    const { text, voiceId } = await req.json();
+    const { text, voiceId, stability, style, speed } = await req.json();
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
 
     if (!ELEVENLABS_API_KEY) {
       throw new Error("ElevenLabs API key not configured");
     }
 
-    const selectedVoiceId = voiceId || "EXAVITQu4vr4xnSDxMaL"; // Sarah voice
+    const selectedVoiceId = voiceId || "EXAVITQu4vr4xnSDxMaL";
 
     const response = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}?output_format=mp3_44100_128`,
@@ -32,11 +32,11 @@ serve(async (req) => {
           text,
           model_id: "eleven_multilingual_v2",
           voice_settings: {
-            stability: 0.3,
+            stability: stability ?? 0.3,
             similarity_boost: 0.75,
-            style: 0.7,
+            style: style ?? 0.7,
             use_speaker_boost: true,
-            speed: 1.1,
+            speed: speed ?? 1.1,
           },
         }),
       }

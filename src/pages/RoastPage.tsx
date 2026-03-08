@@ -280,10 +280,25 @@ const RoastPage = () => {
           <p className="font-mono text-sm leading-relaxed text-secondary-foreground italic">
             "{result.roast}"
           </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {personas.map((p) => (
+              <button
+                key={p.id}
+                onClick={() => setSelectedPersona(p.id)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                  selectedPersona === p.id
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-secondary/50 text-muted-foreground hover:border-primary/50"
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
           <Button
             variant="hero"
             size="sm"
-            className="mt-4"
+            className="mt-3"
             onClick={playRoast}
             disabled={isLoadingAudio}
           >
@@ -292,7 +307,7 @@ const RoastPage = () => {
             ) : isPlayingAudio ? (
               <><Square className="h-4 w-4" /> Stop Roast</>
             ) : (
-              <><Volume2 className="h-4 w-4" /> 🎧 Hear the Roast (Desi Girl Edition)</>
+              <><Volume2 className="h-4 w-4" /> 🎧 Hear the Roast</>
             )}
           </Button>
         </motion.div>
