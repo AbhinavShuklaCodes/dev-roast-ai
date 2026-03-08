@@ -261,9 +261,26 @@ const RoastPage = () => {
           transition={{ delay: 0.2 }}
           className="rounded-2xl border border-glow bg-card p-8 mb-6"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <Flame className="h-5 w-5 text-primary" />
-            <h2 className="font-bold text-lg">The Roast</h2>
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Flame className="h-5 w-5 text-primary" />
+              <h2 className="font-bold text-lg">The Roast</h2>
+            </div>
+            <Button
+              variant="hero-outline"
+              size="sm"
+              onClick={playRoast}
+              disabled={isLoadingAudio}
+              className="gap-2"
+            >
+              {isLoadingAudio ? (
+                <><Loader className="h-4 w-4 animate-spin" /> Generating...</>
+              ) : isPlayingAudio ? (
+                <><Square className="h-3.5 w-3.5" /> Stop</>
+              ) : (
+                <><Volume2 className="h-4 w-4" /> Listen to Roast</>
+              )}
+            </Button>
           </div>
           <p className="font-mono text-sm leading-relaxed text-secondary-foreground italic">
             "{result.roast}"
