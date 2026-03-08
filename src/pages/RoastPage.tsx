@@ -267,6 +267,21 @@ const RoastPage = () => {
           <p className="font-mono text-sm leading-relaxed text-secondary-foreground italic">
             "{result.roast}"
           </p>
+          <Button
+            variant="hero"
+            size="sm"
+            className="mt-4"
+            onClick={playRoast}
+            disabled={isLoadingAudio}
+          >
+            {isLoadingAudio ? (
+              <><Loader className="h-4 w-4 animate-spin" /> Generating Voice...</>
+            ) : isPlayingAudio ? (
+              <><Square className="h-4 w-4" /> Stop Roast</>
+            ) : (
+              <><Volume2 className="h-4 w-4" /> 🎧 Hear the Roast (Desi Girl Edition)</>
+            )}
+          </Button>
         </motion.div>
 
         {/* Strengths & Weaknesses */}
