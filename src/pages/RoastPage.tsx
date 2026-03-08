@@ -79,6 +79,8 @@ const RoastPage = () => {
   const [loadingPhase, setLoadingPhase] = useState("Fetching GitHub data...");
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [selectedPersona, setSelectedPersona] = useState("desi-aunty");
+  const [pitchOffset, setPitchOffset] = useState(0);
+  const [rateOffset, setRateOffset] = useState(0);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   const personas = [
@@ -100,8 +102,8 @@ const RoastPage = () => {
     const persona = personas.find(p => p.id === selectedPersona) || personas[0];
     const text = `${persona.intro} ${result.roast}`;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.pitch = persona.pitch;
-    utterance.rate = persona.rate;
+    utterance.pitch = Math.max(0, Math.min(2, persona.pitch + pitchOffset));
+    utterance.rate = Math.max(0.5, Math.min(2, persona.rate + rateOffset));
     utterance.lang = "en-IN";
 
     // Pick a female voice, preferring Indian English
@@ -282,6 +284,46 @@ const RoastPage = () => {
                 {p.label}
               </button>
             ))}
+          </div>
+          <div className="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs text-muted-foreground">🎭 Sarcasm (Pitch)</label>
+                <span className="text-xs font-mono text-primary">{pitchOffset > 0 ? '+' : ''}{pitchOffset.toFixed(1)}</span>
+              </div>
+              <input
+                type="range"
+                min="-0.5"
+                max="0.7"
+                step="0.1"
+                value={pitchOffset}
+                onChange={(e) => setPitchOffset(parseFloat(e.target.value))}
+                className="w-full h-1.5 rounded-full appearance-none bg-border accent-primary cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
+                <span>Chill</span>
+                <span>Extra Dramatic</span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="text-xs text-muted-foreground">⚡ Speed</label>
+                <span className="text-xs font-mono text-primary">{rateOffset > 0 ? '+' : ''}{rateOffset.toFixed(1)}</span>
+              </div>
+              <input
+                type="range"
+                min="-0.3"
+                max="0.5"
+                step="0.1"
+                value={rateOffset}
+                onChange={(e) => setRateOffset(parseFloat(e.target.value))}
+                className="w-full h-1.5 rounded-full appearance-none bg-border accent-primary cursor-pointer"
+              />
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-0.5">
+                <span>Slow Burn</span>
+                <span>Rapid Fire</span>
+              </div>
+            </div>
           </div>
           <Button
             variant="hero"
